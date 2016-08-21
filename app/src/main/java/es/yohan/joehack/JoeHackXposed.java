@@ -2,6 +2,7 @@ package es.yohan.joehack;
 
 
 import android.content.Context;
+import android.location.Location;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
@@ -97,9 +98,32 @@ public class JoeHackXposed implements IXposedHookLoadPackage {
 
     }
 
+    private void hackPokemonGo(final LoadPackageParam lpparam) {
+        int[] data = new int[0];
+        findAndHookMethod("com.nianticlabs.nia.location.NianticLocationManager", lpparam.classLoader,
+                "nativeLocationUpdate",
+                Location.class,
+                data.getClass(),
+                Context.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        Location l = (Location)param.args[0];
+                        XposedBridge.log("Pokemon GPS " + l.toString());
+                        XposedBridge.log("Pokemon Provider" + l.getProvider());
+                        XposedBridge.log("Pokemon Location" + l.getLatitude() + " " + l.getLongitude());
+                    }
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+
+                    }
+                });
+
+    }
 
 
-    public void handleLoadPackage(final LoadPackageParam lpparam) throws Throwable {
+
+        public void handleLoadPackage(final LoadPackageParam lpparam) throws Throwable {
         XposedBridge.log("Loaded app: " + lpparam.packageName);
         if (lpparam.packageName.equals("com.bca.sakuku")) {
             hackSakuku(lpparam);
@@ -107,6 +131,11 @@ public class JoeHackXposed implements IXposedHookLoadPackage {
         if (lpparam.packageName.equals("es.yohan.joehack")) {
             hackTest(lpparam);
         }
+
+        if (lpparam.packageName.equals("com.nianticlabs.pokemongo")) {
+            hackPokemonGo(lpparam);
+        }
+
 
     }
 }

@@ -21,11 +21,14 @@ import java.io.PrintWriter;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static de.robv.android.xposed.XposedHelpers.findConstructorExact;
 
+import de.robv.android.xposed.XSharedPreferences;
 
 /**
  * Created by yohanes on 8/19/16.
  */
 public class JoeHackXposed implements IXposedHookLoadPackage {
+
+
 
     //testing before and after hook
     private void hackTest(final LoadPackageParam lpparam) {
@@ -39,6 +42,31 @@ public class JoeHackXposed implements IXposedHookLoadPackage {
                         param.setResult(true);
                     }
                 });
+
+        findAndHookMethod("es.yohan.joehack.MainActivity", lpparam.classLoader, "setPokeConfig",
+                boolean.class,
+                double.class,
+                double.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        boolean offset_enabled = (boolean)param.args[0];
+                        double lat_offset = (double)param.args[1];
+                        double lon_offset = (double)param.args[2];
+                        XposedBridge.log("Change pokeconfig " + offset_enabled + " " + lat_offset + " " + lon_offset);
+                    }
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        XSharedPreferences pref = new XSharedPreferences(JoeHackXposed.class.getPackage().getName(), "MainActivity");
+                        pref.makeWorldReadable();
+                        pref.reload();
+                        boolean offset_enabled = pref.getBoolean("poke_enable_offset", false);
+                        double lat_offset = getDouble(pref, "lat_offset", 0);
+                        double lon_offset = getDouble(pref, "lon_offset", 0);
+                        XposedBridge.log("Change pokeconfig result: " + offset_enabled + " " + lat_offset + " " + lon_offset);
+                    }
+                });
+
 
         findAndHookMethod("es.yohan.joehack.MainActivity", lpparam.classLoader, "hooked",
                 String.class,
@@ -93,12 +121,15 @@ public class JoeHackXposed implements IXposedHookLoadPackage {
                 XposedBridge.log("Change result " + param.getResult());
             }
         });
-
-
-
     }
 
+    double getDouble(final XSharedPreferences prefs, final String key, final double defaultValue) {
+        return Double.longBitsToDouble(prefs.getLong(key, Double.doubleToLongBits(defaultValue)));
+    }
+
+
     private void hackPokemonGo(final LoadPackageParam lpparam) {
+        XposedBridge.log("Pokemon go hack: " + lpparam.packageName);
         int[] data = new int[0];
         findAndHookMethod("com.nianticlabs.nia.location.NianticLocationManager", lpparam.classLoader,
                 "nativeLocationUpdate",
@@ -108,17 +139,38 @@ public class JoeHackXposed implements IXposedHookLoadPackage {
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        Location l = (Location)param.args[0];
-                        XposedBridge.log("Pokemon GPS " + l.toString());
-                        XposedBridge.log("Pokemon Provider" + l.getProvider());
-                        XposedBridge.log("Pokemon Location" + l.getLatitude() + " " + l.getLongitude());
+                        if (param.args[0]!=null) {
+                            Location l = (Location) param.args[0];
+                            XposedBridge.log("Pokemon GPS " + l.toString());
+                            XposedBridge.log("Pokemon Provider" + l.getProvider());
+                            XposedBridge.log("Pokemon Location" + l.getLatitude() + " " + l.getLongitude());
+                            double lat = l.getLatitude();
+                            double lon = l.getLongitude();
+
+                            XSharedPreferences pref = new XSharedPreferences(JoeHackXposed.class.getPackage().getName(), "MainActivity");
+                            pref.makeWorldReadable();
+                            pref.reload();
+                            boolean offset_enabled = pref.getBoolean("poke_enable_offset", false);
+                            double lat_offset = getDouble(pref, "lat_offset", 0);
+                            double lon_offset = getDouble(pref, "lon_offset", 0);
+
+                            XposedBridge.log("pokeconfig noe " + offset_enabled + " " + lat_offset + " " + lon_offset);
+
+                            if (offset_enabled) {
+                                lat += lat_offset;
+                                lon += lon_offset;
+                                XposedBridge.log("Pokemon Location now" + l.getLatitude() + " " + l.getLongitude());
+                            }
+                            l.setLatitude(lat);
+                            l.setLongitude(lon);
+                        }
                     }
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
 
                     }
                 });
-
+        XposedBridge.log("Pokemon go hooked: " + lpparam.packageName);
     }
 
 

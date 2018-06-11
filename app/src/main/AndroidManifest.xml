@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="es.yohan.joehack">
+    package="es.yohan.jokowitollshack">
 
     <application
         android:allowBackup="true"
@@ -18,11 +18,11 @@
             android:value="54" />
         <meta-data
             android:name="xposeddescription"
-            android:value="Joe Hack Module"
+            android:value="No Jokowi Maps Module"
             tools:ignore="ManifestResource" />
 
 
-        <activity android:name=".MainActivity">
+        <activity android:name="es.yohan.jokowitollshack.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

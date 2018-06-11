@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="es.yohan.joehack.MainActivity">
+    tools:context="es.yohan.jokowitollshack.MainActivity">
 
     <LinearLayout
         android:orientation="vertical"
@@ -15,56 +15,16 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hello World!"
-            android:id="@+id/statustext" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lat offset"
             android:id="@+id/textView"
-            android:layout_below="@+id/statustext"
-            android:layout_alignParentStart="true" />
-
-        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="numberSigned|numberDecimal"
-            android:ems="10"
-            android:id="@+id/latOffsetText"
-            android:layout_below="@+id/statustext"
-            android:layout_alignParentStart="true"
-            android:editable="true" />
+            android:text="Ini cuma lelucon" />
 
         <TextView
+            android:id="@+id/statustext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lon offset"
-            android:id="@+id/textView2"
-            android:layout_below="@+id/latOffsetText"
-            android:layout_alignParentStart="true" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="numberSigned|numberDecimal"
-            android:ems="10"
-            android:id="@+id/lonOffsetText" />
-
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Enable Offset"
-            android:id="@+id/cbEnableOffset"
-            android:checked="false" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Apply"
-            android:id="@+id/applyButton" />
+            android:text="Status XPosed" />
 
     </LinearLayout>
 

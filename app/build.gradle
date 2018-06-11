@@ -2,10 +2,10 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
-        applicationId "es.yohan.joehack"
+        applicationId "es.yohan.jokowitolls"
         minSdkVersion 19
         targetSdkVersion 24
         versionCode 1
